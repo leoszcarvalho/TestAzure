@@ -1,0 +1,38 @@
+﻿@{
+    ViewData["Title"] = "Chat privado";
+    var targetUser = ViewBag.TargetUser as string;
+}
+
+<h2>Chat com @targetUser</h2>
+
+<div>
+    <input id="messageInput" placeholder="Mensagem..." />
+    <button onclick="sendMessage()">Enviar</button>
+</div>
+
+<ul id="messagesList"></ul>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+<script>
+    const targetUser = "@targetUser";
+
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
+
+    connection.on("ReceiveMessage", function (user, message) {
+        const li = document.createElement("li");
+        li.textContent = `${user}: ${message}`;
+        document.getElementById("messagesList").appendChild(li);
+    });
+
+    connection.start().then(() => {
+        connection.invoke("JoinPrivateChat", targetUser);
+    });
+
+    function sendMessage() {
+        const message = document.getElementById("messageInput").value;
+        connection.invoke("SendPrivateMessage", targetUser, message)
+            .catch(err => console.error(err.toString()));
+    }
+</script>

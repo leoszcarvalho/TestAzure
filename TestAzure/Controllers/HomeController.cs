@@ -1,12 +1,17 @@
-using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using TestAzure.Models;
 
 namespace TestAzure.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+
+        private static List<Conversation> Conversations = new();
+        private static List<string> UsersOnline = new() { "alice", "bob", "carol" };
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -16,6 +21,7 @@ namespace TestAzure.Controllers
 
         public IActionResult Index()
         {
+
             _logger.LogTrace("TRACE log message - for very detailed debugging");
             _logger.LogDebug("DEBUG log message - for general debugging");
             _logger.LogInformation("INFO log message - for normal operations");
@@ -23,7 +29,9 @@ namespace TestAzure.Controllers
             _logger.LogError("ERROR log message - something went wrong");
             _logger.LogCritical("CRITICAL log message - critical failure");
 
-            return View();
+            var currentUser = User.Identity?.Name!;
+            var otherUsers = UsersOnline.Where(u => u != currentUser).ToList();
+            return View(otherUsers);
         }
 
         public IActionResult Privacy()

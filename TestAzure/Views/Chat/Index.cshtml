@@ -7,11 +7,8 @@
 
 @foreach (var user in Model)
 {
-    <form asp-controller="Chat" asp-action="Start" method="post">
+    <form asp-action="Start" method="post">
         <input type="hidden" name="otherUser" value="@user" />
         <button type="submit">Conversar com @user</button>
     </form>
 }
-<form asp-controller="Account" asp-action="Logout" method="post">
-    <button type="submit">Sair</button>
-</form>
