@@ -1,0 +1,6 @@
+/.vs
+/TestAzure/bin
+/TestAzure/obj
+/TestAzure/Properties/PublishProfiles
+/TestAzure/Properties/ServiceDependencies
+
